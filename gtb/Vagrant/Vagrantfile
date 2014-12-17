@@ -1,0 +1,56 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+
+###################################################################
+# Vagrantfile for a Symfony app - replace all uses of {{something}}
+###################################################################
+
+
+VAGRANTFILE_API_VERSION = "2"
+
+boxes = {
+    :{{project_name}} => {
+        :cpu      => ENV['{{project_name}}_CPU'].nil? ? 1 : ENV['{{project_name}}_CPU'].to_i,
+        :ip       => ENV['{{project_name}}_IP'].nil? ? "192.168.50.50" : ENV['{{project_name}}_IP'],
+        :hostname => ENV['{{project_name}}_HOSTNAME'].nil? ? "{{project_name}}-vm" : ENV['{{project_name}}_HOSTNAME'],
+        :memory   => ENV['{{project_name}}_MEM'].nil? ? 1024 : ENV['{{project_name}}_MEM'].to_i,
+        :nfs      => ENV['{{project_name}}_NFS'] == "0" ? false : true,
+        :verbose  => ENV['VERBOSE'] == "1" ? true : false
+    }
+}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "chef/ubuntu-13.10"
+
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
+    config.ssh.forward_agent = true
+
+    boxes.each_pair do |box, boxoptions|
+        config.vm.define box do |node|
+
+            node.hostmanager.aliases = %w({{project_name}}.dev www.{{project_name}}.dev)
+
+#            node.vm.network "forwarded_port", guest: 4444, host: 4444
+#            node.vm.network "forwarded_port", guest: 5999, host: 5999
+
+            node.vm.provision "shell", inline: "mkdir -p /var/www/{{organization_name}}/"
+
+            node.vm.synced_folder ".", "/home/vagrant/{{project_name}}", nfs: boxoptions[:nfs]
+            node.vm.network "private_network", ip: boxoptions[:ip]
+            node.vm.provider :virtualbox do |v|
+                v.customize ["modifyvm", :id, "--memory", boxoptions[:memory]]
+                v.customize ["modifyvm", :id, "--cpus", boxoptions[:cpu]]
+            end
+
+            node.vm.provision "shell", path: "./provision.sh"
+
+            node.vm.hostname = boxoptions[:hostname]
+            node.vm.provision :hostmanager
+        end
+    end
+end
