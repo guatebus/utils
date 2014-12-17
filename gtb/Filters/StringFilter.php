@@ -4,6 +4,9 @@ namespace Cloud\CoreBundle;
 
 final class StringFilter
 {
+    /**
+     * Prevent class instantiation
+     */
     private function __construct()
     {
     }
