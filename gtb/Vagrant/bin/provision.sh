@@ -109,5 +109,7 @@ echo -e "Host stage.{{organization_name}}.eu\n\tStrictHostKeyChecking no\n" > /h
 rm -rf /tmp/*
 
 su vagrant -c 'composer.phar global require --dev rhumsaa/jenkins-php=~1.3'
+
 # this line should be the last
+# update the install script below with the stuff you need to install your project
 sudo -u vagrant /home/vagrant/{{project_name}}/bin/install

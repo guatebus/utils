@@ -1,0 +1,17 @@
+#!/bin/bash
+# this script shall only be used by Vagrant, it installs
+# a Symfony2.4 project with assetic and sets up the db schema
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Make sure to update this cd
+cd $DIR/../..
+composer.phar install
+./app/console assets:install web
+./app/console cache:clear --no-warmup
+./app/console doctrine:database:drop --force
+./app/console doctrine:database:create
+./app/console doctrine:schema:update --force
+./app/console cache:warmup
+./app/console assetic:dump
+chmod -R 777 app/cache app/logs

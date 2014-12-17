@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 v.customize ["modifyvm", :id, "--cpus", boxoptions[:cpu]]
             end
 
-            node.vm.provision "shell", path: "./provision.sh"
+            node.vm.provision "shell", path: "./bin/provision.sh"
 
             node.vm.hostname = boxoptions[:hostname]
             node.vm.provision :hostmanager
