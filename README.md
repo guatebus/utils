@@ -1,16 +1,16 @@
-Utils
+utils
 =====
 
 Utility classes and config files for reference
 
-# Filters
+## Filters
 
  - StringFilter (static class with string helper methods)
 
-# Vagrant
+## Vagrant
 
  - Sample Vagrantfile and scripts to setup, provision and install a project on a Vagrantbox
 
-# scripts
+## scripts
 
  - TestsScaffolding (setup scaffolding and run a test suite issuing single command)
