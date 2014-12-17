@@ -1,4 +1,4 @@
-# Vagrantfile installation
+# Vagrant installation
 
 Start by adding the Vagrantfile and provision.sh files to your project. The
 Vagrantfile is usually added at the project's root (make sure to update the
