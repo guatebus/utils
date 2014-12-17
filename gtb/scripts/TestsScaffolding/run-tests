@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# sets up the test environment for a Symfony2.4 project and runs the test suite
+
+PHP="php"
+
+$PHP -v
+
+composer.phar install --prefer-source
+$PHP app/console assetic:dump --env="test"
+$PHP app/console cache:clear --no-warmup --env="test"
+$PHP app/console doctrine:database:drop --force --env="test"
+$PHP app/console doctrine:database:create --env="test"
+$PHP app/console doctrine:schema:update --force --env="test"
+$PHP app/console doctrine:fixtures:load --env=test --no-interaction
+$PHP app/console cache:warmup --env="test"
+chmod -R 777 app/cache app/logs
+
+# make sure to update this relative path, as well as
+# the configured testsuites in phpunit.xml.dist
+phpunit -c {{relative/path/to/phpunit.xml.dist}}
